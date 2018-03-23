@@ -2,16 +2,24 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const router = express.Router();
 
+const cherrio = require('cheerio');
+const request = require('request');
+
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-// RETURNS ALL THE USERS IN THE DATABASE
 router.get('/', function (req, res) {
-  res.send('hello');
-    // User.find({}, function (err, users) {
-    //     if (err) return res.status(500).send("There was a problem finding the users.");
-    //     res.status(200).send(users);
-    // });
+  const url = 'https://book.douban.com/people/Luxiyalu/annotation/';
+
+  request(url, (err, response, html) => {
+    const $ = cherrio.load(html);
+    const $books = $('.annotations-item');
+    const bookPagesURL = $books.map((i, el) => {
+      return $(el).find('h3 a').attr('href');
+    }).get();
+
+    res.status(200).send(bookPagesURL);
+  });
 });
 
 // // GETS A SINGLE USER FROM THE DATABASE
