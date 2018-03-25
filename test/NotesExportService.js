@@ -18,32 +18,42 @@ describe('NotesExportService', () => {
   });
 
   describe('#getBookURLsFromPage(URL)', () => {
-    it('should craw and return URLs of the books on the page');
-    it('should return an array with length <= 5');
+    it('should craw and return URLs of the books on the page', async () => {
+      const service = new NotesExportService('Doite');
+      const firstPageURL = 'https://book.douban.com/people/Doite/annotation/?start=0';
+      const result = await service.getBookURLsFromPage(firstPageURL);
+      expect(result).to.eql([
+        'https://book.douban.com/people/Doite/annotation/4789228/',
+        'https://book.douban.com/people/Doite/annotation/26329401/',
+        'https://book.douban.com/people/Doite/annotation/26435820/',
+        'https://book.douban.com/people/Doite/annotation/11580128/',
+        'https://book.douban.com/people/Doite/annotation/6754574/',
+      ]);
+    });
   });
 
   describe('#generatePageURLs(numOfBook)', () => {
     it('should return an array of note page URLs', () => {
-      const service = new NotesExportService('Luxiyalu');
+      const service = new NotesExportService('Doite');
 
       expect(service.generatePageURLs(1)).to.eql([
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=0',
+        'https://book.douban.com/people/Doite/annotation/?start=0',
       ]);
       expect(service.generatePageURLs(5)).to.eql([
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=0',
+        'https://book.douban.com/people/Doite/annotation/?start=0',
       ]);
       expect(service.generatePageURLs(6)).to.eql([
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=0',
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=5',
+        'https://book.douban.com/people/Doite/annotation/?start=0',
+        'https://book.douban.com/people/Doite/annotation/?start=5',
       ]);
       expect(service.generatePageURLs(10)).to.eql([
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=0',
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=5',
+        'https://book.douban.com/people/Doite/annotation/?start=0',
+        'https://book.douban.com/people/Doite/annotation/?start=5',
       ]);
       expect(service.generatePageURLs(11)).to.eql([
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=0',
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=5',
-        'https://book.douban.com/people/Luxiyalu/annotation/?start=10',
+        'https://book.douban.com/people/Doite/annotation/?start=0',
+        'https://book.douban.com/people/Doite/annotation/?start=5',
+        'https://book.douban.com/people/Doite/annotation/?start=10',
       ]);
     });
   });
