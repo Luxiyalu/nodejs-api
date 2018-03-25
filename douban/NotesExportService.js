@@ -3,39 +3,69 @@ const cherrio = require('cheerio');
 const request = require('request-promise');
 
 class NotesExportService {
-  constructor(userHandle) {
+  constructor(userHandle, maxBooks = 100) {
+    this.maxBooks = maxBooks;
     this.user = userHandle;
     this.userURL = `https://book.douban.com/people/${userHandle}/annotation/`;
   }
 
   async exportNotes(numOfBooks) {
-    const pageURLs = this.generatePageURLs(numOfBooks);
-    const bookURLs = await pageURLs.map(async (pageURL) => await this.getBookURLsFromPage(pageURL)).reduce((a, b) => a.concat(b));
-    const bookNotesArr = bookURLs.map(bookURL => this.crawBookNotes(bookURL));
+    const bookURLs = await this.getBookURLs(numOfBooks);
+    const bookNotesRequestsArr = bookURLs.map(async bookURL => await this.getBookNotesHTML(bookURL));
+    const bookNotesArr = await Promise.all(bookNotesRequestsArr);
+
+    return bookNotesArr;
   }
-  generatePageURLs(numOfBooks) {
-    const numOfPages = Math.ceil(numOfBooks / 5);
-    const pageURLs = Array(numOfPages).fill(0).map((e, i) => `${this.userURL}?start=${i * 5}`);
-    return pageURLs;
+
+  async getBookNotesHTML(bookURL) {
+    const bookPageHTML = await request(bookURL);
+    const $ = cherrio.load(bookPageHTML);
+    const bookNotesHTML = $.html('.article');
+
+    return bookNotesHTML;
   }
+
+  async getBookURLs(numOfBooks) {
+    const numOfPagesToExport = await this.getNumOfPagesToExport(numOfBooks);
+    const pageURLs = this.generatePageURLs(numOfPagesToExport);
+    const pageURLsRequestArr = pageURLs.map(async pageURL => await this.getBookURLsFromPage(pageURL));
+    const bookURLsArr = await Promise.all(pageURLsRequestArr);
+    const bookURLs = bookURLsArr.reduce((a, b) => a.concat(b));
+
+    return bookURLs.slice(0, numOfBooks);
+  }
+
   async getBookURLsFromPage(pageURL) {
-    // return await 1;
-    try {
-      const html = await request(pageURL);
-      const $ = cherrio.load(html);
-      const $books = $('.annotations-item');
-      const bookURLs = $books.map((i, el) => {
-        return $(el).find('h3 a').attr('href');
-      }).get();
-      // return Promise.resolve(bookURLs);
-      return bookURLs;
-    }
-    catch (error) {
-      // return Promise.reject(error);
-      return error;
-    }
+    const html = await request(pageURL);
+    const $ = cherrio.load(html);
+    const $books = $('.annotations-item');
+    const bookURLs = $books.map((i, el) => {
+      return $(el).find('h3 a').attr('href');
+    }).get();
+
+    return bookURLs;
   }
-  crawBookNotes(bookURL) {
+
+  async getNumOfPagesToExport(numOfBooks) {
+    const totalNumOfPages = await this.getTotalNumOfPages();
+    const requestedPages = Math.ceil(numOfBooks / 5) || totalNumOfPages;
+
+    return Math.min(requestedPages, totalNumOfPages);
+  }
+
+  async getTotalNumOfPages() {
+    const firstPageHTML = await request(this.userURL);
+    const $ = cherrio.load(firstPageHTML);
+    const numOfPagesStr = $('.paginator > a').last().text();
+
+    return parseInt(numOfPagesStr, 10);
+  }
+
+  generatePageURLs(numOfPages) {
+    const fixLengthArr = Array(numOfPages).fill(null);
+    const pageURLs = fixLengthArr.map((e, i) => `${this.userURL}?start=${i * 5}`);
+
+    return pageURLs;
   }
 }
 
