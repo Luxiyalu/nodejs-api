@@ -4,9 +4,28 @@ const NotesExportService = require('../douban/NotesExportService');
 
 describe('NotesExportService', () => {
   describe('#exportNotes(numOfBooks)', () => {
-    it('should return an array of length numOfBooks when it is passed in');
+    it('should return notes of first book only when 1 book is requested', async () => {
+      const service = new NotesExportService('Doite');
+      const bookNotesHTML = await service.exportNotes(1);
 
-    it('should return all the books when numOfBooks is not passed in');
+      expect(bookNotesHTML).to.match(/Test 1./);
+      expect(bookNotesHTML).to.match(/Test 2./);
+      expect(bookNotesHTML).to.match(/Thinking, Fast and Slow/);
+      expect(bookNotesHTML).not.to.match(/In The Plex/);
+    });
+
+    it('should return all the book`s notes when numOfBooks is not passed in', async () => {
+      const service = new NotesExportService('Doite');
+      const bookNotesHTML = await service.exportNotes();
+
+      expect(bookNotesHTML.length).to.equal(6);
+      expect(bookNotesHTML).to.match(/Test 1./);
+      expect(bookNotesHTML).to.match(/Test 2./);
+      expect(bookNotesHTML).to.match(/Thinking, Fast and Slow/);
+      expect(bookNotesHTML).to.match(/In The Plex/);
+      expect(bookNotesHTML).to.match(/The Art of Learning/);
+      expect(bookNotesHTML).to.match(/The Signal and the Noise/);
+    });
   });
 
   describe('#crawBookNotes(bookURL)', () => {

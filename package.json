@@ -4,8 +4,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha",
-    "test:watch": "PORT=8000 nodemon --watch ./ --exec 'mocha ./test'"
+    "test": "mocha --timeout 999999",
+    "test:watch": "PORT=8000 nodemon --watch ./ --exec 'mocha ./test --timeout 999999'"
   },
   "author": "Lucia",
   "license": "MIT",
