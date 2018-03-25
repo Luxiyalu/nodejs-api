@@ -9,7 +9,7 @@ class NotesExportService {
     this.userURL = `https://book.douban.com/people/${userHandle}/annotation/`;
   }
 
-  async exportNotes(numOfBooks) {
+  async getBooksNotesHTML(numOfBooks) {
     const bookURLs = await this.getBookURLs(numOfBooks);
     const bookNotesRequestsArr = bookURLs.map(async bookURL => await this.getBookNotesHTML(bookURL));
     const bookNotesArr = await Promise.all(bookNotesRequestsArr);

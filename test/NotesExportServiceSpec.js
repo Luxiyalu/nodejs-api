@@ -3,10 +3,10 @@ const expect = require('chai').expect;
 const NotesExportService = require('../douban/NotesExportService');
 
 describe('NotesExportService', () => {
-  describe('#exportNotes(numOfBooks)', () => {
+  describe('#getBooksNotesHTML(numOfBooks)', () => {
     it('should return notes of first book only when 1 book is requested', async () => {
       const service = new NotesExportService('Doite');
-      const bookNotesHTML = await service.exportNotes(1);
+      const bookNotesHTML = await service.getBooksNotesHTML(1);
 
       expect(bookNotesHTML).to.match(/Test 1./);
       expect(bookNotesHTML).to.match(/Test 2./);
@@ -16,7 +16,7 @@ describe('NotesExportService', () => {
 
     it('should return all the book`s notes when numOfBooks is not passed in', async () => {
       const service = new NotesExportService('Doite');
-      const bookNotesHTML = await service.exportNotes();
+      const bookNotesHTML = await service.getBooksNotesHTML();
 
       expect(bookNotesHTML.length).to.equal(6);
       expect(bookNotesHTML).to.match(/Test 1./);
