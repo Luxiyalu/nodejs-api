@@ -4,7 +4,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha"
+    "test": "mocha",
+    "test:watch": "PORT=8000 nodemon --watch ./ --exec 'mocha ./test'"
   },
   "author": "Lucia",
   "license": "MIT",
