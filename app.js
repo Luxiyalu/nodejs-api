@@ -4,7 +4,7 @@ const app = express();
 
 const DoubanNotesController = require('./douban/NotesController');
 
-app.use(cors({origin: 'http://localhost:3000'}));
+app.use(cors({origin: [ /localhost.*/, /luxiyalu\.com.*/ ]}));
 app.use('/douban/notes', DoubanNotesController);
 
 app.get('/', (req, res) => {
