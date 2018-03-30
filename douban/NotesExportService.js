@@ -1,6 +1,7 @@
 
 const cherrio = require('cheerio');
 const request = require('request-promise');
+const BookNotesExportService = require('./BookNotesExportService');
 
 class NotesExportService {
   constructor(userHandle, maxBooks = 100) {
@@ -17,10 +18,9 @@ class NotesExportService {
     return bookNotesArr;
   }
 
-  async getBookNotesHTML(bookURL) {
-    const bookPageHTML = await request(bookURL);
-    const $ = cherrio.load(bookPageHTML);
-    const bookNotesHTML = $.html('.article');
+  async getBookNotesHTML(bookNotesPageURL) {
+    const bookNotesExport = new BookNotesExportService(bookNotesPageURL);
+    const bookNotesHTML = await bookNotesExport.getNotesHTML();
 
     return bookNotesHTML;
   }

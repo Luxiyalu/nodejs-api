@@ -28,17 +28,6 @@ describe('NotesExportService', () => {
     });
   });
 
-  describe('#crawBookNotes(bookURL)', () => {
-    it('should craw all the notes of a book', async () => {
-      const bookNotesURL = 'https://book.douban.com/people/Doite/annotation/6754574/';
-      const service = new NotesExportService('Doite');
-      const bookPageArticleHTML = await service.getBookNotesHTML(bookNotesURL);
-
-      expect(bookPageArticleHTML).to.match(/Test 1./);
-      expect(bookPageArticleHTML).to.match(/Test 2./);
-    });
-  });
-
   describe('#getNumOfPagesToExport(numOfBooks)', () => {
     it('should return all pages when negative values are passed in', async () => {
       const service = new NotesExportService('Doite');
