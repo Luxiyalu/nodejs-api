@@ -4,19 +4,20 @@ const request = require('request-promise');
 const BookNotesExportService = require('./BookNotesExportService');
 
 class UserNotesExportService {
-  constructor(userHandle, maxBooks = 100) {
-    this.maxBooks = maxBooks;
+  constructor(userHandle, maxPages = 20) {
+    this.maxPages = maxPages;
     this.user = userHandle;
     this.userURL = `https://book.douban.com/people/${userHandle}/annotation/`;
   }
 
-  async getNotesHTML(pageIndex = 0, accumulator = []) {
+  async getNotesHTML(pagesRequested = this.maxPages, pageIndex = 0, accumulator = []) {
     const pageURL = `${ this.userURL }?start=${ pageIndex * 5 }`;
     const pageHTML = await request(pageURL);
     const $ = cherrio.load(pageHTML);
     const bookPageURLs = this.getBookURLsFromPage($);
+    const isLastPageRequested = pageIndex >= pagesRequested - 1;
 
-    if (!this.nextPageExists($)) {
+    if (isLastPageRequested || !this.nextPageExists($)) {
       const allBookURLs = accumulator.concat(bookPageURLs);
       const allNotesHTML = await Promise.all(allBookURLs.map(async (bookPageURL) => {
         return new BookNotesExportService(bookPageURL).getNotesHTML();
@@ -24,7 +25,7 @@ class UserNotesExportService {
 
       return allNotesHTML;
     } else {
-      return this.getNotesHTML(pageIndex + 1, accumulator.concat(bookPageURLs));
+      return this.getNotesHTML(pagesRequested, pageIndex + 1, accumulator.concat(bookPageURLs));
     }
   }
 

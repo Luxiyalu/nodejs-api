@@ -9,7 +9,7 @@ router.use(bodyParser.json());
 router.get('/:user', async (req, res) => {
   try {
     const noteExportInstance = new UserNotesExportService(req.params.user);
-    const booksHTMLArr = await noteExportInstance.getNotesHTML(req.query.size);
+    const booksHTMLArr = await noteExportInstance.getNotesHTML(req.query.pages);
 
     res.status(200).send({
       booksHTMLArr: booksHTMLArr,
