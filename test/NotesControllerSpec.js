@@ -5,7 +5,7 @@ let should = chai.should();
 
 chai.use(chaiHttp);
 
-describe.only('NotesController /douban/notes', () => {
+describe('NotesController /douban/notes', () => {
   describe('GET /:user', () => {
 
     it('GET ?pages=1 should GET books on the first page', (done) => {
