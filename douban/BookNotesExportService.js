@@ -10,10 +10,9 @@ class BookNotesExportService {
     const pageURL = `${ this.bookNotesPageURL }?start=${ pageIndex * 10 }`;
     const pageHTML = await request(pageURL);
     const $ = cherrio.load(pageHTML);
-    const nextPageExists = this.nextPageExists($);
     const pageNotesHTML = this.getSinglePageNotesHTML($);
 
-    if (!nextPageExists) {
+    if (!this.nextPageExists($)) {
       return accumulator + pageNotesHTML;
     } else {
       return this.getNotesHTML(pageIndex + 1, accumulator + pageNotesHTML);

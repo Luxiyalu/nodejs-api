@@ -1,4 +1,4 @@
-const NotesExportService = require('./NotesExportService');
+const UserNotesExportService = require('./UserNotesExportService');
 const bodyParser = require('body-parser');
 const express = require('express');
 const router = express.Router();
@@ -8,8 +8,8 @@ router.use(bodyParser.json());
 
 router.get('/:user', async (req, res) => {
   try {
-    const noteExportInstance = new NotesExportService(req.params.user);
-    const booksHTMLArr = await noteExportInstance.getBooksNotesHTML(req.query.size);
+    const noteExportInstance = new UserNotesExportService(req.params.user);
+    const booksHTMLArr = await noteExportInstance.getNotesHTML(req.query.size);
 
     res.status(200).send({
       booksHTMLArr: booksHTMLArr,

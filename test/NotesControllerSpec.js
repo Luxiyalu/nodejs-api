@@ -5,10 +5,10 @@ let should = chai.should();
 
 chai.use(chaiHttp);
 
-describe('Books', () => {
-  describe('/GET user notes', () => {
+describe('NotesController /douban/notes', () => {
+  describe('GET /:user', () => {
 
-    it('should GET one book if size parameter is 1', (done) => {
+    it('GET ?size=1 should GET one book', (done) => {
       chai.request(server).get('/douban/notes/Doite?size=1').end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a('object');
