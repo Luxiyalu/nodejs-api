@@ -8,7 +8,7 @@ app.use(cors({origin: [ /localhost.*/, /luxiyalu\.com.*/ ]}));
 app.use('/douban/notes', DoubanNotesController);
 
 app.get('/', (req, res) => {
-  res.status(200).send('home');
+  res.status(200).send('Hello there!');
 });
 
 module.exports = app;
