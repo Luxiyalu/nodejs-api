@@ -18,5 +18,14 @@ describe('NotesController /douban/notes', () => {
       });
     });
 
+    it.only('GET user that does not exist should raise error', (done) => {
+      chai.request(server).get('/douban/notes/.').end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.be.a('object');
+        res.body.error.should.be.a('string');
+        done();
+      });
+    });
+
   });
 });
