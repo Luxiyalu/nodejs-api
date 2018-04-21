@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "start:watch": "nodemon server.js",
+    "start:watch": "PORT=8080 nodemon server.js",
     "test": "mocha --timeout 999999",
     "test:watch": "PORT=8000 nodemon --watch ./ --exec 'mocha ./test --timeout 999999'"
   },
