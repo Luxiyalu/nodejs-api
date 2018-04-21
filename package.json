@@ -1,9 +1,10 @@
 {
   "name": "nodejs-api",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
+    "start:watch": "nodemon server.js",
     "test": "mocha --timeout 999999",
     "test:watch": "PORT=8000 nodemon --watch ./ --exec 'mocha ./test --timeout 999999'"
   },
